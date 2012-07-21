@@ -27,7 +27,7 @@
 				
 		// the YQL query used in this hack with my WordPress profile:
 		// select * from html where url in ('http://wordpress.org/support/profile/keesiemeijer') and xpath="//div[@id='user-replies']/ol/li"
-		// test the YQL query with my WordPress profile here: http://y.ahoo.it/0nLVR
+		// test the YQL query with my WordPress profile at: http://y.ahoo.it/0nLVR
 		
 		$profileUrl =	"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%20in%20('".implode("','",$url)."')%20and%20xpath%3D%22%2F%2Fdiv%5B%40id%3D\'".$activity."\'%5D%2Fol%2Fli%22%0A&format=json";
 		$ch = curl_init(); 
@@ -42,12 +42,12 @@
 		// check if there are any results from the query
 		if ($allResults['query']['count'] > 0) {
 		
-			// if there is only one topic make it an array (wordpress.org formats it different than multiple topics)
+			// if there is only one topic make it an array (format is different than multiple topics)
 			if ($allResults['query']['count'] == 1) { 
 					$allResults['query']['results']['li'] = array($allResults['query']['results']['li']);
 			}
 			
-			// sanatize the $allResults array (wordpress.org formats resolved and unresolved topics differently)
+			// sanatize the $allResults array (format for resolved and unresolved topics is different)
 			foreach ($allResults['query']['results']['li'] as $reply) { 
 			
 				$link = ($reply['a']) ? $reply['a'] : '';
@@ -66,8 +66,9 @@
 			$i = 0;
 			// give the list items in the $results array a time variable that we can later use to sort the results 
 			foreach ($results as $reply) { 
-				$topic_content = $reply['span']['content']; // (Most recent reply: 3 minutes ago)
+				$topic_content = $reply['span']['content']; 
 				
+				// (Most recent reply: 3 minutes ago)
 				// check if the word "Most" is in the list item's content
 				$most = strpos($topic_content, 'Most'); 
 				if ($most !== false ) { 
@@ -101,10 +102,8 @@
 			// sort the topics on time
 			usort($recentResults, "cmp");
 			
-			// make the output for this function (unordered list)
-			// todo: check $recentResults
-			
-			$html .='<ul>'. "\n";
+			// make the output for this function (unordered list)			
+			$html .='<ul class="unstyled" id="content">'. "\n";
 			foreach ($recentResults as $reply) {
 				$resolved = '';
 				$class = '';
@@ -114,14 +113,16 @@
 					$class = ' class="resolved"';
 				}
 				$html .= '<li' . $class . '>'. "\n";
-				$html .= $resolved . ' <a href="'. $reply['a']['href'] . '" >' . $reply['a']['content'] . '</a>' . "\n";
-				$html .= '<p>' . $reply['content'];
+				$html .= '<p><span class="topic">' . $resolved . ' <a href="'. $reply['a']['href'] . '" >' . $reply['a']['content'] . '</a></span>' . "\n";
+				$html .= $reply['content'];
+				
 				$html .= '<span class="freshness">';
-				$html .= $reply['span']['content'] . '</span></p>' . "\n" . '</li>' . "\n\n";
+				$spancontent= preg_replace('/Most recent reply: (.*?) ago/','Most recent reply: <span class="badge">\1 ago</span>',$reply['span']['content']);
+				$html .= $spancontent . '</span></p>' . "\n" . '</li>' . "\n\n";
 			}
 			$html .= '</ul>' . "\n";
 			
-		} // end if (!empty($results)) {}
+		} // end if (!empty($results))
 		
 		return $html; 
 	}

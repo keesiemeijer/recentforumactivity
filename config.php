@@ -1,34 +1,62 @@
 <?php 
 
 	/**
-	 * url to this hack on your own site.
+	 * absolute url to this app on your server.
 	 *
-	 * (example)
-	 * $path = http://www.yoursite.com/recentforumactivity/
+	 * used as the action attribute in the profile form
+	 * <form action="<?php $url; ?>">
+	 *
+	 * (examples)
+	 * $url = 'http://www.yoursite.com/recentforumactivity/';
+	 *
+	 * (string) ablolute url
 	 */
-
 	
-	$path = 'http://www.stoerke.be/recentforumactivity/';
+	 $url = 'http://www.stoerke.be/recentforumactivity/';
+	
 	
 	/**
 	 * set a default (valid) WordPress forum profile 
 	 *
-	 * if set the form to submit a profile is removed from this hack
-	 * default = empty string ($WordPress_profile = '';) (no default WordPress profile)
+	 * if set the form to submit a profile is removed from this app
+	 * default = $WordPress_profile = ''; (no default WordPress profile)
+	 *
+	 * (string) profile name
 	 */
+	 
 	$WordPress_profile = ''; 
+		
+
+	/**
+	 * maximum profile pages to be scanned 
+	 * default is 5 pages, but can be changed with the profile form if $show_pages (below) is set to true.
+	 *
+	 * (int)
+	 */
+	 
+	$max_pages = 5;
+	
 	
 	/**
-	 * show or hide the pagenumber text input in the profile form
-	 * (boolean) true or false
+	 * show or hide the pagenumber dropdown in the profile form
+	 * (boolean) true or false 
 	 */
+	 
 	$show_pages = true;
+	
 
 	/**
-	 * maximum of profile pages to be scanned 
-	 * use -1 to allow any number of pages to be scanned (on my setup 147 pages was the maximum)
-	 * default is 4 pages (index.php), but can be changed with the profile form if $show_pages is set to true.
-	 */
-	$max_pages = 5;
+	 * Hides the second column if set to false: $show_second_column = false;
+	 * (boolean) true or false
+	 */	
+	 
+	$show_second_column = true;
+	 
+	
+	/**
+	 * Hides the third column if set to false: $show_third_column = false;
+	 * (boolean) true or false
+	 */	
+	 	
+	$show_third_column = true;
 
-?>
