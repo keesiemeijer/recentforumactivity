@@ -240,7 +240,7 @@
 					<div class="<?php echo $span; ?>"><!-- third column -->
 						
 						<p>Download this app to run it on your own server or localhost.</p>
-						<p><a class="btn btn-success" href="http://dl.dropbox.com/u/1237410/recentforumactivity.zip">
+						<p><a class="btn btn-success" href="recentforumactivity.zip">
 							<i class="icon-download icon-white"></i>
 							Download</a>
 						</p>
