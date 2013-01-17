@@ -40,7 +40,7 @@
 	$pagequery = '';
 	
 	// check the url for "activity" (Recent User Activity or Threads Started)
-	$activity = (isset($_GET['activity'])) ? $_GET['activity'] : 'user-replies';
+	$activity = (isset($_GET['activity']) && $_GET['activity'] == 'user-threads') ? 'user-threads' : 'user-replies';
 	$title = ($activity == 'user-replies') ? 'Recent User Activity' : 'Recent Activity - Threads started';
 	
 	// set the profile
@@ -192,11 +192,16 @@
 						<?php if($content != '') : ?>
 						<h3>WordPress.org</h3>
 						<?php 
+									
+									
+									
 									if ($activity != 'user-replies') {
 										// change these urls in config.php
-										echo '<p><a href="' . $url . '?profile='. $profile . $pagequery . '">Recent User Activity</a></p>';
+										$query_vars = ($showform) ? '?profile='. $profile . $pagequery : '?activity=user-replies';
+										echo '<p><a href="' . $url . $query_vars . '">Recent User Activity</a></p>';
 									} else {
-										echo '<p><a href="' . $url . '?profile=' . $profile . '&amp;activity=user-threads'.$pagequery.'">Threads Started</a></p>';
+										$query_vars = ($showform) ? '?profile='. $profile . $pagequery . '&amp;activity=user-threads': '?activity=user-threads';
+										echo '<p><a href="' . $url . $query_vars . '">Threads Started</a></p>';
 									}
 						?>
 						
@@ -219,6 +224,7 @@
 							<li><a href="http://wordpress.org/support/forum/requests-and-feedback">Requests and Feedback</a></li>
 							<li><a href="http://wordpress.org/support/forum/alphabeta">Alpha/Beta</a></li>
 							<li><a href="http://wordpress.org/support/forum/meetups">Meetups</a></li>
+							<li><a href="http://wordpress.org/support/forum/reviews">Reviews</a></li>
 						</ul>
 						<ul>
 							<li class="view"><a href="http://wordpress.org/support/view/all-topics">All Topics</a></li>

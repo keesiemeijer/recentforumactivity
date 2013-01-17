@@ -1,18 +1,19 @@
 <?php 
-
+	
 	/**
-	 * absolute url to this app on your server.
+	 * set the url for this app (where the app lives on your server)
 	 *
 	 * used as the action attribute in the profile form
 	 * <form action="<?php $url; ?>">
 	 *
 	 * (examples)
-	 * $url = 'http://www.yoursite.com/recentforumactivity/';
+	 * $url = 'http://www.stoerke.be/recentforumactivity/';
+	 * default = '';
 	 *
-	 * (string) ablolute url
+	 * (string) ablolute url or empty string;
 	 */
 	
-	 $url = 'http://www.stoerke.be/recentforumactivity/';
+	$url = '';
 	
 	
 	/**
@@ -25,7 +26,7 @@
 	 */
 	 
 	$WordPress_profile = ''; 
-		
+	
 
 	/**
 	 * maximum profile pages to be scanned 
@@ -39,19 +40,23 @@
 	
 	/**
 	 * show or hide the pagenumber dropdown in the profile form
+	 *
+	 * important: because the form is saved in Javascript localstorage
+	 *            changes to this variable will only take effect (in your browser) after submitting the form once  
+	 *
 	 * (boolean) true or false 
 	 */
 	 
 	$show_pages = true;
 	
-
+	
 	/**
 	 * Hides the second column if set to false: $show_second_column = false;
 	 * (boolean) true or false
 	 */	
 	 
 	$show_second_column = true;
-	 
+	
 	
 	/**
 	 * Hides the third column if set to false: $show_third_column = false;

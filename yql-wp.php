@@ -50,7 +50,7 @@
 			// sanatize the $allResults array (format for resolved and unresolved topics is different)
 			foreach ($allResults['query']['results']['li'] as $reply) { 
 			
-				$link = ($reply['a']) ? $reply['a'] : '';
+				$link = (isset($reply['a'])) ? $reply['a'] : '';
 				$p = $reply['p'];
 				if ($link != '') {
 					$p = array('a' => $link)+$p;
