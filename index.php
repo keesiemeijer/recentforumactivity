@@ -255,10 +255,10 @@
 						
 						<h3>Inspiration</h3>
 						<p>After <a href="http://wordpress.org/support/topic/feature-request-wordpress-forums-recent-activity-when-logged-in">asking around</a> on the forums I found out this feature was on their todo list for a long time and would not be implemented soon. So I made it myself.</p>
-						<p>Read this awesome article by Christian Heilmann on how to make a simular app like this: <a href="http://www.wait-till-i.com/2009/03/11/building-a-hack-using-yql-flickr-and-the-web-step-by-step/">Building a hack using YQL, Flickr and the web &#8211; step by step</a></p>
+						<p>Read this awesome article by Christian Heilmann on how to make a similar app like this: <a href="http://www.wait-till-i.com/2009/03/11/building-a-hack-using-yql-flickr-and-the-web-step-by-step/">Building a hack using YQL, Flickr and the web &#8211; step by step</a></p>
 						<h3>Changelog</h3>
 						<p>[Update 17-07-2012]<br/>New Responsive layout with Bootstrap. Added ability to easily hide the second and third column</p>
-						<p>[Update 05-09-2011]<br/>Centralized all app settings in config.php. New page dropdown in profile form. Option to set a default WordPress Forum Profile in config.php (removes profile form if set)</p>
+						<p>[Update 05-09-2011]<br/>Centralised all app settings in config.php. New page dropdown in profile form. Option to set a default WordPress Forum Profile in config.php (removes profile form if set)</p>
 						<p>[Update 20-01-2011]<br/>Reformatted the list items to reflect the changes made by wordpress.org. Using localstorage to remember your profile</p>
 						<p>[Update 04-08-2010]<br/>Ability to check recent activity on "Threads Started" and links to wordpress.org</p>
 						<p>[Update 31-07-2010]<br/>Much faster Performance and some bug fixing</p>
