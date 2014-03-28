@@ -4,211 +4,211 @@
 		<meta charset="utf-8">
 		<title>Recent Forum Activity</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
+
 		<meta name="robots" content="NOINDEX,NOFOLLOW">
-		
+
 		<!-- Le styles -->
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="assets/css/recentforumactivity.min.css" rel="stylesheet">
-		
+
 		<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
 		<!--[if lt IE 9]>
 			<script src="assets/js/html5shiv.js"></script>
 		<![endif]-->
 		<script type="text/javascript" src="assets/js/resolved.min.js"></script>
-		
+
 		<!-- Le fav and touch icons -->
 		<link rel="shortcut icon" href="assets/ico/favicon.ico">
 		<link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/apple-touch-icon-144-precomposed.png">
 		<link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/apple-touch-icon-114-precomposed.png">
 		<link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/apple-touch-icon-72-precomposed.png">
 		<link rel="apple-touch-icon-precomposed" href="assets/ico/apple-touch-icon-57-precomposed.png">
-		
+
 	</head>
-	
+
 	<body>
 	<?php
-	
-	include('config.php'); // including default parameters
-	include('yql-wp.php'); // including functions
-	
+
+include 'config.php'; // including default parameters
+include 'yql-wp.php'; // including functions
+
+$profile = '';
+$content = '';
+$error = '</h3><div class="alert alert-info">Please submit a WordPress dot org profile in the form above.</div>';
+$showform = true;
+$pagenumber = false;
+$pagequery = '';
+
+// check the url for "activity" (Recent User Activity or Threads Started)
+$activity = ( isset( $_GET['activity'] ) && $_GET['activity'] == 'user-threads' ) ? 'user-threads' : 'user-replies';
+$title = ( $activity == 'user-replies' ) ? 'Recent User Activity' : 'Recent Activity - Threads started';
+
+// set the profile
+if ( '' === trim( $WordPress_profile ) ) {
+
+	// no default profile in config.php -> check if a valid profile is submitted
+	if ( isset( $_GET['profile'] ) ) {
+		$profile = ( !preg_match( "/^[0-9|a-z|A-Z|\-|\+|\.|_]+$/", $_GET['profile'] ) ) ? 'invalid profile' : $_GET['profile'];
+	}
+
+} else {
+
+	// default profile is set in config.php
+
+	$profile = trim( $WordPress_profile );
+
+	$showform = false;
+
+}
+
+// if allowed, set the pages to scan
+if ( $show_pages ) {
+
+	$pagenumber = ( isset( $_GET['pages'] ) ) ? abs( intval( $_GET['pages'] ) ) : $max_pages;
+
+	if ( $pagenumber ) {
+
+		// limit pagenumber to $max_pages set in config.php
+		$pagenumber = ( $max_pages >= $pagenumber ) ? $pagenumber : $max_pages;
+
+		// page query for links Recent User Activity or Threads Started
+		$pagequery = '&amp;pages=' . $pagenumber;
+
+	} else {
+
+		$pagenumber = $max_pages;
+	}
+
+}
+
+// set $pagenumber to $max_pages in config.php if pagenumber is not altered with the form
+$pagenumber = ( $pagenumber ) ? $pagenumber : $max_pages;
+
+// the profile is set. get the recent activity topics from this profile.
+if ( $profile == 'invalid profile' ) {
+
 	$profile = '';
-	$content = '';
-	$error = '</h3><div class="alert alert-info">Please submit a WordPress dot org profile in the form above.</div>';
-	$showform = true;
-	$pagenumber = false;
-	$pagequery = '';
-	
-	// check the url for "activity" (Recent User Activity or Threads Started)
-	$activity = (isset($_GET['activity']) && $_GET['activity'] == 'user-threads') ? 'user-threads' : 'user-replies';
-	$title = ($activity == 'user-replies') ? 'Recent User Activity' : 'Recent Activity - Threads started';
-	
-	// set the profile
-	if(trim($WordPress_profile) == '') {
-	
-		// no default profile is set in config.php
-		
-		// check if a valid profile is submitted
-		if (isset($_GET['profile'])) {
-			$profile = (!preg_match("/^[0-9|a-z|A-Z|\-|\+|\.|_]+$/",$_GET['profile'])) ? 'invalid profile' : $_GET['profile'];
-		}		
-		
-	} else {
-	
-		// default profile is set in config.php
-		
-		$profile = trim($WordPress_profile); 
-		// todo - check for invalid characters in default profile? (probably overkill)
-		
-		$showform = false;
-		
-	}
-	
-	// if allowed, override $max_pages set in config.php 
-	if ($show_pages) {
-		if (isset($_GET['pages']) && !preg_match("/[^0-9]/",$_GET['pages'])) {
-			if (trim($_GET['pages']) != '' || (int) $_GET['pages'] > 0) {
-				// submitted pagenumber is a number greater than zero
-				
-				// limit pagenumber to $max_pages set in config.php
-				$pagenumber = ($max_pages >= $_GET['pages']) ? $_GET['pages'] : $max_pages;
-				
-				// pagequery for links Recent User Activity or Threads Started
-				$pagequery = '&amp;pages=' . $pagenumber;
-				
-			} 
-		} else {
-			$pagenumber = $max_pages;
+	$error = '<div class="alert alert-error">invalid profile! Submit a different profile.</div>';
+
+} else {
+
+	if ( $profile != '' ) {
+
+		$content = get_profile_pages( $profile, $pagenumber, $activity );
+
+		// check if there are any results with this profile
+		if ( trim( $content ) == '' ) {
+			$error = '<div class="alert alert-error">';
+			$error .= '<p>No results were found!</p>';
+			$error .= '<p>Possible causes:</p>';
+			$error .= '<ul><li>the profile has no (recent activity) topics</li>';
+			$error .= '<li>wordpress.org is offline</li>';			
+			$error .= '<li>Yahoo servers are offline</li>';
+			$error .= '<li>a server routing issue where this app is hosted</li>';
+			$error .= '<li>a firewall is preventing this app acces to the web</li></ul>';
+			$error .= '<p>Check if the <a href="http://wordpress.org/support/profile/' .  $profile . '">WordPress profile</a> is valid.</p>';
+			$error .= '</div>';
 		}
 	}
-	
-	// set $pagenumber to $max_pages in config.php if pagenumber is not altered with the form 
-	$pagenumber = ($pagenumber) ? $pagenumber : $max_pages;
-	
-	// the profile is set. get the recent activity topics from this profile.
-	if ($profile == 'invalid profile') {
-	
-		$profile = '';
-		$error = '<div class="alert alert-error">invalid profile! Submit a different profile.</div>';
-		
-	} else {
-	
-		if($profile != ''){
-		
-			$content = get_profile_pages($profile, $pagenumber, $activity);
-			
-			// check if there are any results with this profile
-			if (trim($content) == '') {
-				$error = '<div class="alert alert-error">';
-				$error .= '<p>No results were found!</p>';
-				$error .= '<p>Check if the <a href="http://wordpress.org/support/profile/' .  $profile . '">WordPress profile</a> is valid.</p>';
-				$error .= '<p>Other possible causes:</p>';
-				$error .= '<ul><li>wordpress.org is not online.</li>'; 
-				$error .= '<li>yahoo servers are not online.</li>';
-				$error .= '<li>a routing issue from your ISP</li>';
-				$error .= '<li>a firewall is preventing this hack acces to the web</li></ul>';
-				$error .= '</div>';
-			} 
-		}
-	}
-	
+}
+
 ?>
-		
-		
+
+
 		<div class="container-fluid">
-		
-		
+
+
 			<h1>Recent Forum Activity</h1>
 			<p class="tagline">display the topics of your WordPress [dot] org Profile Pages in order of activity</p>
-				
-			<?php if($showform) : ?>
-			
+
+			<?php if ( $showform ) : ?>
+
 			<form action="<?php echo $url; ?>" id="f" class="form-inline well">
-					
+
 				<fieldset>
-					
-					<label for="profile">http://wordpress.org/support/profile/
+
+					<label for="profile"><span>http://wordpress.org/support/profile/</span>
 					<input type="text" class="input-xlarge" id="profile" name="profile" value="<?php echo $profile; ?>"></label>
-					
-				<?php if ($show_pages) : ?>
-									
-					<label for="pages">pages:
+
+				<?php if ( $show_pages ) : ?>
+
+					<label for="pages"><span>pages:</span>
 					<select name="pages" id="pages" class="span1">
-					<?php 
-						
-								for ($i = 1; $i <= (int) $max_pages; $i++) {
-									echo '<option value="'.$i.'"';
-									if($pagenumber == $i) {
-										echo ' selected="selected"';
-									}
-									echo '>'.$i.'</option>';
-								}
-						?>
-						
+					<?php
+
+	for ( $i = 1; $i <= (int) $max_pages; $i++ ) {
+	echo '<option value="'.$i.'"';
+	if ( $pagenumber == $i ) {
+		echo ' selected="selected"';
+	}
+	echo '>'.$i.'</option>';
+}
+?>
+
 					</select>
 					</label>
 				<?php endif; // end if $show_pages ?>
-					
+
 					<input type="submit" value="submit Profile" id="submitbutton" class="btn ">
-				</fieldset>	
+				</fieldset>
 			</form>
 			<?php else : ?>
 			<div class="well">
 				<h3>http://wordpress.org/support/profile/<?php echo $profile; ?></h3>
 			</div>
 			<?php endif; // end if $showform ?>
-				
-			
-			
+
+
+
 			<!-- row of columns -->
 			<div class="row-fluid">
-				<?php 
-				// no columns are hidden (default)
-				$span = 'span6';
-				$offset = '';
-				
-				// One column is hidden
-				if(!$show_second_column || !$show_third_column){
-					$span = 'span8';
-				}
-				// both columns are hidden
-				if(!$show_second_column && !$show_third_column){
-					$span = 'span12';
-			  } 
-			  ?>
+				<?php
+// no columns are hidden (default)
+$span = 'span6';
+$offset = '';
+
+// One column is hidden
+if ( !$show_second_column || !$show_third_column ) {
+	$span = 'span8';
+}
+// both columns are hidden
+if ( !$show_second_column && !$show_third_column ) {
+	$span = 'span12';
+}
+?>
 				<div class="<?php echo $span; ?>"><!-- first column -->
-				<?php 
-					if($content == ''){
-						echo '<h3>' . $title . '</h3>' .$error;
-					} else {
-						echo '<h3 id="useractivity">' . $title . '</h3>' . $content;
-					}
-				?>
+				<?php
+if ( '' === $content ) {
+	echo '<h3>' . $title . '</h3>'  . $error;
+} else {
+	echo '<h3 id="useractivity">' . $title . '</h3>' . $content;
+}
+?>
 				</div><!-- /first column -->
-				<?php if($show_second_column) : ?>
-				<?php $span = ($span == 'span8') ? 'span4' :  'span3' ?>
+				<?php if ( $show_second_column ) : ?>
+				<?php $span = ( $span == 'span8' ) ? 'span4' :  'span3' ?>
 				<div class="<?php echo $span; ?>"><!-- second column -->
-					
-						<?php if($content != '') : ?>
+
+						<?php if ( '' !== $content ) : ?>
 						<h3>WordPress.org</h3>
-						<?php 
-									
-									
-									
-									if ($activity != 'user-replies') {
-										// change these urls in config.php
-										$query_vars = ($showform) ? '?profile='. $profile . $pagequery : '?activity=user-replies';
-										echo '<p><a href="' . $url . $query_vars . '">Recent User Activity</a></p>';
-									} else {
-										$query_vars = ($showform) ? '?profile='. $profile . $pagequery . '&amp;activity=user-threads': '?activity=user-threads';
-										echo '<p><a href="' . $url . $query_vars . '">Threads Started</a></p>';
-									}
-						?>
-						
-						
+						<?php
+
+
+
+	if ( $activity != 'user-replies' ) {
+		// change these urls in config.php
+		$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery : '?activity=user-replies';
+		echo '<p><a href="' . $url . $query_vars . '">Recent User Activity</a></p>';
+	} else {
+	$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery . '&amp;activity=user-threads': '?activity=user-threads';
+	echo '<p><a href="' . $url . $query_vars . '">Threads Started</a></p>';
+}
+?>
+
+
 						<p><a href="http://wordpress.org/support/profile/<?php echo $profile; ?>">Your Profile Page</a></p>
 						<?php endif; ?>
-						
+
 						<h3>Forums</h3>
 						<ul>
 							<li><a href="http://wordpress.org/support/forum/installation">Installation</a></li>
@@ -235,13 +235,13 @@
 						</ul>
 					</div> <!-- /second column -->
 				<?php endif; ?>
-				<?php if($show_third_column) : ?>
-				<?php $span = ($span == 'span8') ? 'span4' :	'span3' ?>
+				<?php if ( $show_third_column ) : ?>
+				<?php $span = ( $span == 'span8' ) ? 'span4' : 'span3' ?>
 					<div class="<?php echo $span; ?>"><!-- third column -->
-						
+
 						<p>Download this app to run it on your own server or localhost.</p>
 						<p><a class="btn btn-success" href="recentforumactivity.zip">
-							<i class="icon-download icon-white"></i>
+							<span aria-hidden="true" data-download="&#58880;"></span>
 							Download</a>
 						</p>
 						<p>Requires a server running php 5.</p><p>Change the settings of this app in the config.php file:</p>
@@ -250,9 +250,9 @@
 							<li>set a default profile</li>
 							<li>remove the "Pages" dropdown</li>
 							<li>set the allowed maximum pages to scan</li>
-							<li>hide the second or third column</li>							
+							<li>hide the second or third column</li>
 						</ul>
-						
+
 						<h3>Inspiration</h3>
 						<p>After <a href="http://wordpress.org/support/topic/feature-request-wordpress-forums-recent-activity-when-logged-in">asking around</a> on the forums I found out this feature was on their todo list for a long time and would not be implemented soon. So I made it myself.</p>
 						<p>Read this awesome article by Christian Heilmann on how to make a similar app like this: <a href="http://www.wait-till-i.com/2009/03/11/building-a-hack-using-yql-flickr-and-the-web-step-by-step/">Building a hack using YQL, Flickr and the web &#8211; step by step</a></p>
@@ -265,24 +265,24 @@
 					</div><!-- /third column -->
 				<?php endif; ?>
 			</div><!-- /row-fluid -->
-			
+
 			<hr>
 
 			<footer>
 				<p>Recent Forum Activity by keesiemeijer using <a href="http://developer.yahoo.com/yui">YUI</a> and <a href="http://developer.yahoo.com/yql/">YQL</a>.<br /> Test the YQL query in the <a href="http://y.ahoo.it/0nLVR" >YQL console</a></p>
 			</footer>
-		
+
 		</div> <!-- /container -->
-	<?php if($showform) : ?>
+	<?php if ( $showform ) : ?>
 		<script>
-	// in stead of cookies I use local storage in modern browsers to cache your profile 
+	// in stead of cookies I use local storage in modern browsers to cache your profile
 	// next time you visit this site your profile will allready be inserted into the form
-	
+
 	// test for localStorage support
 	if(('localStorage' in window) && window['localStorage'] !== null){
 	var f = document.getElementById('f');
-	
-	<?php if(isset($_GET['profile'])){?>
+
+	<?php if ( isset( $_GET['profile'] ) ) {?>
 	localStorage.setItem('my_WP_profile',f.innerHTML);
 	document.getElementById('submitbutton').focus();
 	<?php } else { ?>
@@ -293,7 +293,7 @@
 							var profile = document.getElementById('profile');
 							profile.focus();
 						}
-						
+
 		<?php } ?>
 	}
 	</script>
