@@ -89,18 +89,16 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 				// make the time variable
 				++$i; // counter used to give each topic a unique time number
 
-				$minute = strpos( $topic_content, 'minute' );
-				if ( $minute !== false ) { $topic_time = $topic_time *60+$i; }
-				$hour = strpos( $topic_content, 'hour' );
-				if ( $hour !== false ) { $topic_time = $topic_time *60*60+$i;}
-				$day = strpos( $topic_content, 'day' );
-				if ( $day !== false ) { $topic_time = $topic_time *60*60*24+$i;}
-				$week = strpos( $topic_content, 'week' );
-				if ( $week !== false ) { $topic_time = $topic_time *60*60*24*7+$i; }
-				$month = strpos( $topic_content, 'month' );
-				if ( $month !== false ) { $topic_time = $topic_time *60*60*24*7*4+$i; }
-				$year = strpos( $topic_content, 'year' );
-				if ( $year !== false ) { $topic_time = $topic_time *60*60*24*7*4*12+$i; }
+				$time_in_seconds = array( 
+					'minute' => 60, 'hour' => 3600, 'day' => 86400, 'week' => 604800,
+					'month' => 2419200, 'year' => 29030400 
+				);
+
+				foreach($time_in_seconds as $type => $sec){
+					if ( strpos( $topic_content, $type ) !== false ) { 
+						$topic_time = ( $topic_time * $sec ) + $i; 
+					}
+				}
 
 				// give the reply a time variable for sorting
 				$reply['topic_time'] = $topic_time;
