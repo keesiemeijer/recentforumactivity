@@ -102,24 +102,21 @@ if ( $profile == 'invalid profile' ) {
 			$error .= '<p>No results were found!</p>';
 			$error .= '<p>Possible causes:</p>';
 			$error .= '<ul><li>the profile has no (recent activity) topics</li>';
-			$error .= '<li>wordpress.org is offline</li>';			
+			$error .= '<li>wordpress.org is offline</li>';
 			$error .= '<li>Yahoo servers are offline</li>';
 			$error .= '<li>a server routing issue where this app is hosted</li>';
-			$error .= '<li>a firewall is preventing this app acces to the web</li></ul>';
+			$error .= '<li>a firewall is preventing this app access to the web</li></ul>';
 			$error .= '<p>Check if the <a href="http://wordpress.org/support/profile/' .  $profile . '">WordPress profile</a> is valid.</p>';
 			$error .= '</div>';
 		}
 	}
 }
-
 ?>
-
-
 		<div class="container-fluid">
 
 
 			<h1>Recent Forum Activity</h1>
-			<p class="tagline">display the topics of your WordPress [dot] org Profile Pages in order of activity</p>
+			<p class="tagline">display the topics of your WordPress [dot] org profile pages in order of activity</p>
 
 			<?php if ( $showform ) : ?>
 
@@ -135,15 +132,14 @@ if ( $profile == 'invalid profile' ) {
 					<label for="pages"><span>pages:</span>
 					<select name="pages" id="pages" class="span1">
 					<?php
-
-	for ( $i = 1; $i <= (int) $max_pages; $i++ ) {
-	echo '<option value="'.$i.'"';
-	if ( $pagenumber == $i ) {
-		echo ' selected="selected"';
-	}
-	echo '>'.$i.'</option>';
-}
-?>
+					for ( $i = 1; $i <= (int) $max_pages; $i++ ) {
+						echo '<option value="'.$i.'"';
+						if ( $pagenumber == $i ) {
+							echo ' selected="selected"';
+						}
+						echo '>'.$i.'</option>';
+					}
+					?>
 
 					</select>
 					</label>
@@ -163,27 +159,27 @@ if ( $profile == 'invalid profile' ) {
 			<!-- row of columns -->
 			<div class="row-fluid">
 				<?php
-// no columns are hidden (default)
-$span = 'span6';
-$offset = '';
+				// no columns are hidden (default)
+				$span = 'span6';
+				$offset = '';				
 
-// One column is hidden
-if ( !$show_second_column || !$show_third_column ) {
-	$span = 'span8';
-}
-// both columns are hidden
-if ( !$show_second_column && !$show_third_column ) {
-	$span = 'span12';
-}
-?>
-				<div class="<?php echo $span; ?>"><!-- first column -->
+				// One column is hidden
+				if ( !$show_second_column || !$show_third_column ) {
+					$span = 'span8';
+				}
+				// both columns are hidden
+				if ( !$show_second_column && !$show_third_column ) {
+					$span = 'span12';
+				}
+				?>
+								<div class="<?php echo $span; ?>"><!-- first column -->
 				<?php
-if ( '' === $content ) {
-	echo '<h3>' . $title . '</h3>'  . $error;
-} else {
-	echo '<h3 id="useractivity">' . $title . '</h3>' . $content;
-}
-?>
+				if ( '' === $content ) {
+					echo '<h3>' . $title . '</h3>'  . $error;
+				} else {
+					echo '<h3 id="useractivity">' . $title . '</h3>' . $content;
+				}
+				?>
 				</div><!-- /first column -->
 				<?php if ( $show_second_column ) : ?>
 				<?php $span = ( $span == 'span8' ) ? 'span4' :  'span3' ?>
@@ -192,19 +188,15 @@ if ( '' === $content ) {
 						<?php if ( '' !== $content ) : ?>
 						<h3>WordPress.org</h3>
 						<?php
-
-
-
-	if ( $activity != 'user-replies' ) {
-		// change these urls in config.php
-		$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery : '?activity=user-replies';
-		echo '<p><a href="' . $url . $query_vars . '">Recent User Activity</a></p>';
-	} else {
-	$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery . '&amp;activity=user-threads': '?activity=user-threads';
-	echo '<p><a href="' . $url . $query_vars . '">Threads Started</a></p>';
-}
-?>
-
+						if ( $activity != 'user-replies' ) {
+							// change these urls in config.php
+							$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery : '?activity=user-replies';
+							echo '<p><a href="' . $url . $query_vars . '">Recent User Activity</a></p>';
+						} else {
+						$query_vars = ( $showform ) ? '?profile='. $profile . $pagequery . '&amp;activity=user-threads': '?activity=user-threads';
+						echo '<p><a href="' . $url . $query_vars . '">Threads Started</a></p>';
+						}
+						?>
 
 						<p><a href="http://wordpress.org/support/profile/<?php echo $profile; ?>">Your Profile Page</a></p>
 						<?php endif; ?>
@@ -219,7 +211,6 @@ if ( '' === $content ) {
 							<li><a href="http://wordpress.org/support/forum/wp-advanced">WP-Advanced</a></li>
 							<li><a href="http://wordpress.org/support/forum/multisite">Multisite</a></li>
 							<li><a href="http://wordpress.org/support/forum/localhost-installs">Localhost Installs</a></li>
-							<li><a href="http://wordpress.org/support/forum/your-wordpress">Your WordPress</a></li>
 							<li><a href="http://wordpress.org/support/forum/miscellaneous">Miscellaneous</a></li>
 							<li><a href="http://wordpress.org/support/forum/requests-and-feedback">Requests and Feedback</a></li>
 							<li><a href="http://wordpress.org/support/forum/alphabeta">Alpha/Beta</a></li>
@@ -240,11 +231,13 @@ if ( '' === $content ) {
 					<div class="<?php echo $span; ?>"><!-- third column -->
 
 						<p>Download this app to run it on your own server or localhost.</p>
-						<p><a class="btn btn-success" href="recentforumactivity.zip">
+						<p><a class="btn btn-success" href="https://github.com/keesiemeijer/recentforumactivity/releases/latest">
 							<span aria-hidden="true" data-download="&#58880;"></span>
 							Download</a>
 						</p>
-						<p>Requires a server running php 5.</p><p>Change the settings of this app in the config.php file:</p>
+						<p><a href="https://github.com/keesiemeijer/recentforumactivity/">GitHub repository</a></p>
+
+						<p>Change the settings of this app in the config.php file:</p>
 						<ul>
 							<li>set the url to the profile form</li>
 							<li>set a default profile</li>
@@ -254,7 +247,6 @@ if ( '' === $content ) {
 						</ul>
 
 						<h3>Inspiration</h3>
-						<p>After <a href="http://wordpress.org/support/topic/feature-request-wordpress-forums-recent-activity-when-logged-in">asking around</a> on the forums I found out this feature was on their todo list for a long time and would not be implemented soon. So I made it myself.</p>
 						<p>Read this awesome article by Christian Heilmann on how to make a similar app like this: <a href="http://www.wait-till-i.com/2009/03/11/building-a-hack-using-yql-flickr-and-the-web-step-by-step/">Building a hack using YQL, Flickr and the web &#8211; step by step</a></p>
 						<h3>Changelog</h3>
 						<p>[Update 17-07-2012]<br/>New Responsive layout with Bootstrap. Added ability to easily hide the second and third column</p>
@@ -269,7 +261,7 @@ if ( '' === $content ) {
 			<hr>
 
 			<footer>
-				<p>Recent Forum Activity by keesiemeijer using <a href="http://developer.yahoo.com/yui">YUI</a> and <a href="http://developer.yahoo.com/yql/">YQL</a>.<br /> Test the YQL query in the <a href="http://y.ahoo.it/0nLVR" >YQL console</a></p>
+				<p>Recent Forum Activity by keesiemeijer using <a href="http://developer.yahoo.com/yql/">YQL</a>.<br /> Test the YQL query in the <a href="http://y.ahoo.it/0nLVR" >YQL console</a></p>
 			</footer>
 
 		</div> <!-- /container -->
