@@ -231,7 +231,7 @@ if ( $profile == 'invalid profile' ) {
 					<div class="<?php echo $span; ?>"><!-- third column -->
 
 						<p>Download this app to run it on your own server or localhost.</p>
-						<p><a class="btn btn-success" href="https://github.com/keesiemeijer/recentforumactivity/releases/latest">
+						<p><a class="btn btn-success" href="https://github.com/keesiemeijer/recentforumactivity/archive/master.zip">
 							<span aria-hidden="true" data-download="&#58880;"></span>
 							Download</a>
 						</p>
