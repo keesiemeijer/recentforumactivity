@@ -84,7 +84,7 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 			if ( $most !== false ) {
 
 				// get the number from the list item's content
-				$topic_time = preg_replace( '/[^\d]+/', '', $topic_content );
+				$topic_time = preg_replace( '/[^\d]+/', '', preg_replace( '/by.*/', '', $topic_content ) );
 
 				// make the time variable
 				++$i; // counter used to give each topic a unique time number
