@@ -50,24 +50,13 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 	// check if there are any results from the query
 	if ( isset( $allResults['query']['count'] ) && ( (int) $allResults['query']['count'] > 0 ) ) {
 
-		$results_li = ( isset( $allResults['query']['results']['li'] ) ) ? $allResults['query']['results']['li'] : array();
+		$results = ( isset( $allResults['query']['results']['li'] ) ) ? $allResults['query']['results']['li'] : array();
 
 		// if there is only one topic make it an array (format is different than multiple topics)
 		if ( $allResults['query']['count'] == 1 ) {
-			$results_li = array( $results_li );
+			$results = array( $results );
 		}
 
-		// sanatize the $allResults array (format for resolved and unresolved topics is different)
-		foreach ( (array) $results_li as $reply ) {
-
-			$link = ( isset( $reply['a'] ) ) ? $reply['a'] : '';
-			$p = $reply['p'];
-			if (  '' != $link  ) {
-				$p = array( 'a' => $link )+$p;
-			}
-			$results[] = $p;
-
-		}
 	}
 
 	if ( !empty( $results ) ) {
@@ -76,6 +65,7 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 		$i = 0;
 		// give the list items in the $results array a time variable that we can later use to sort the results
 		foreach ( $results as $reply ) {
+
 			$topic_content = $reply['span']['content'];
 
 			// (Most recent reply: 3 minutes ago)
@@ -89,14 +79,14 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 				// make the time variable
 				++$i; // counter used to give each topic a unique time number
 
-				$time_in_seconds = array( 
+				$time_in_seconds = array(
 					'minute' => 60, 'hour' => 3600, 'day' => 86400, 'week' => 604800,
-					'month' => 2419200, 'year' => 29030400 
+					'month' => 2419200, 'year' => 29030400
 				);
 
-				foreach($time_in_seconds as $type => $sec){
-					if ( strpos( $topic_content, $type ) !== false ) { 
-						$topic_time = ( $topic_time * $sec ) + $i; 
+				foreach ( $time_in_seconds as $type => $sec ) {
+					if ( strpos( $topic_content, $type ) !== false ) {
+						$topic_time = ( $topic_time * $sec ) + $i;
 					}
 				}
 
@@ -118,8 +108,8 @@ function get_profile_pages( $profile = '', $pages = 3, $activity = 'user-replies
 			foreach ( $recentResults as $reply ) {
 				$resolved = '';
 				$class = '';
-				if ( substr( $reply['content'], 0, 10 ) == '[resolved]' ) {
-					$reply['content'] = substr( $reply['content'], 10 );
+				if ( substr( trim( $reply['content'] ), 0, 10 ) == '[resolved]' ) {
+					$reply['content'] = substr( trim( $reply['content'] ), 10 );
 					$resolved = '[resolved]';
 					$class = ' class="resolved"';
 				}
